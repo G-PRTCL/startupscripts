@@ -110,9 +110,9 @@ if [[ ! -e /etc/openvpn/server/server.conf ]]; then
 	#set public ip
 	public_ip=$(curl http://checkip.amazonaws.com)
 	protocol="udp"
-    port="443"
-    dns="1.1.1.1"
-    client="client"
+    	port="1194"
+    	dns="168.63.129.16"
+    	client="client"
 #ip tables setup 
 	echo "OpenVPN installation is ready to begin."
 	# Install a firewall if firewalld or iptables are not already available
