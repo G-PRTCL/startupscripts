@@ -127,7 +127,7 @@ if [[ ! -e /etc/openvpn/server/server.conf ]]; then
 			firewall="iptables"
 		fi
 	fi
-	read -n1 -r -p "Press any key to continue..."
+#	read -n1 -r -p "Press any key to continue..."
 	# If running inside a container, disable LimitNPROC to prevent conflicts
 	if systemd-detect-virt -cq; then
 		mkdir /etc/systemd/system/openvpn-server@server.service.d/ 2>/dev/null
