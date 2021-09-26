@@ -19,6 +19,8 @@ sudo apt-get -y -q install \
     containerd.io
 
 # pull the custom openvpn image
- sudo docker pull saiguna/openvpn_bionic
+ #sudo docker pull saiguna/openvpn_bionic
+ docker pull saiguna/u2004:working
  #run open vpn image
- sudo docker run --cap-add=NET_ADMIN -p 1194:1194/udp -p 943:943/tcp -p 9443:9443/tcp saiguna/openvpn_bionic
+ #sudo docker run --cap-add=NET_ADMIN -p 1194:1194/udp -p 943:943/tcp -p 9443:9443/tcp saiguna/openvpn_bionic
+ sudo docker run --cap-add=NET_ADMIN -p 1194:1194/udp -p 943:943/tcp -p 9443:9443/tcp saiguna/u2004:working
