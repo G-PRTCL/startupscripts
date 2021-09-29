@@ -23,4 +23,4 @@ sudo apt-get -y -q install \
  docker pull saiguna/u2004:working
  #run open vpn image
  #sudo docker run --cap-add=NET_ADMIN -p 1194:1194/udp -p 943:943/tcp -p 9443:9443/tcp saiguna/openvpn_bionic
- sudo docker run --cap-add=NET_ADMIN -p 9443:9443/udp -p 943:943/tcp -p 9443:9443/tcp saiguna/mjbuild:0928
+ sudo docker run --env ghost_pass=test123 --cap-add=NET_ADMIN -p 9443:9443/udp -p 943:943/tcp -p 9443:9443/tcp saiguna/mjbuild:0928
