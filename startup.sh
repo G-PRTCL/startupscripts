@@ -19,4 +19,4 @@ sudo apt-get -y -q install \
     containerd.io
  
 # Testing using parameter as environment variable in container.
-sudo docker run --env ghost_pass=$1 --cap-add=NET_ADMIN --device=/dev/net/tun -p 443:443/tcp saiguna/openvpn_focal:latest
+sudo docker run --env ghost_pass=$1 --cap-add=NET_ADMIN --device=/dev/net/tun -p 443:443/tcp saiguna/openvpn_focal:latest &
