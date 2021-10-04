@@ -20,8 +20,8 @@ az group create --name openvpn --location westus --output none
 $json_data = ConvertFrom-JSON -InputObject $data
 $machine_ip = $json_data.publicIpAddress
 
-# Open ports to internet
-az vm open-port --port 943,9443,1194,22 --resource-group openvpn --name openvpn --output none
+# Open ports to internet (remove port 22 for final release)
+az vm open-port --port 943,443,22 --resource-group openvpn --name openvpn --output none
 
 # Install docker and run openvpn container (Asyncronous version of the command)
 Start-Job -ScriptBlock{az vm extension set --resource-group openvpn --vm-name openvpn --name customScript --publisher Microsoft.Azure.Extensions --protected-settings '{\"fileUris\": [\"https://raw.githubusercontent.com/G-PRTCL/startupscripts/main/startup.sh\"],\"commandToExecute\": \"./startup.sh\"}'}
