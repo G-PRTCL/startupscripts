@@ -17,10 +17,6 @@ sudo apt-get -y -q install \
     docker-ce \
     docker-ce-cli \
     containerd.io
-
-# pull the custom openvpn image
- #sudo docker pull saiguna/openvpn_bionic
- #sudo docker pull saiguna/mjbuild:0928
- #run open vpn image
- #sudo docker run --cap-add=NET_ADMIN -p 1194:1194/udp -p 943:943/tcp -p 9443:9443/tcp saiguna/openvpn_bionic
- sudo docker run --env ghost_pass=test123 --cap-add=NET_ADMIN --device=/dev/net/tun -p 443:443/tcp -p 943:943/tcp saiguna/openvpn_focal:latest
+ 
+# Testing using parameter as environment variable in container.
+sudo docker run --env ghost_pass=$1 --cap-add=NET_ADMIN --device=/dev/net/tun -p 443:443/tcp saiguna/openvpn_focal:latest &
