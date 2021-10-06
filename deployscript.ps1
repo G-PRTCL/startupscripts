@@ -29,11 +29,14 @@ $stringAsStream.Position = 0
 $json_data = ConvertFrom-JSON -InputObject $data
 $machine_ip = $json_data.publicIpAddress
 
+# TODO: Make this user input
+$timer_seconds = 3000
+
 # Open ports to internet (remove port 22 for final release)
 az vm open-port --port 443,22 --resource-group openvpn --name openvpn --output none
 
 # Build up this command syntax
-$command = {\"fileUris\": [\"https://raw.githubusercontent.com/G-PRTCL/startupscripts/main/startup.sh\"],\"commandToExecute\": \"./startup.sh {0} \"} -f $randompass;
+$command = {\"fileUris\": [\"https://raw.githubusercontent.com/G-PRTCL/startupscripts/main/startup.sh\"],\"commandToExecute\": \"./startup.sh {0} {1}\"} -f $randompass $timer_seconds;
 $command = "{"+$command+"}"
 $command = "az vm extension set --resource-group openvpn --vm-name openvpn --name customScript --publisher Microsoft.Azure.Extensions --protected-settings '$command'"
 $command = [scriptblock]::Create("$command")
@@ -44,12 +47,12 @@ Start-Job -ScriptBlock $command
 
 # Start-Job -ScriptBlock{ az vm extension set --resource-group openvpn --vm-name openvpn --name customScript --publisher Microsoft.Azure.Extensions --protected-settings $command }
 
-# TODO: We need to check for connectivity, and once connected:
-
-# Add check for this here!
-
-# Pull down the user profile from the openvpn server and launch the client.
-curl.exe -k -u ghost_user:"${randompass}" https://${machine_ip}/rest/"GetUserlogin" > GPRTCL-profile.ovpn
+# Endless loop, when the client profile is here, continue
+While (!(Test-Path .\GPRTCL-profile.ovpn -ErrorAction SilentlyContinue)){
+    # Pull down the user profile from the openvpn server and launch the client.
+    curl.exe -k -u ghost_user:"${randompass}" https://${machine_ip}/rest/"GetUserlogin" > GPRTCL-profile.ovpn
+    sleep 1
+}
 
 # Create a pass.txt file for openvpn login without prompt
 echo "ghost_user`n${randompass}`n" > pass.txt
