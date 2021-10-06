@@ -47,10 +47,19 @@ Start-Job -ScriptBlock $command
 
 # Start-Job -ScriptBlock{ az vm extension set --resource-group openvpn --vm-name openvpn --name customScript --publisher Microsoft.Azure.Extensions --protected-settings $command }
 
+
+# TODO: Incoporate these into the script
+
+# Convert the downloaded profile into UTF-8 format 
+# [System.Io.File]::ReadAllText($FileName) | Out-File -FilePath $FileName -Encoding Ascii
+
+# Command to connect to the openvpn
+# .\OpenVPNConnect.exe --accept-gdpr --import-profile="C:\Program Files\OpenVPN Connect\GPRTCL-profile.ovpn" --username=ghost_user --password=182D24B6CBCEC2B2EFEABB22F7617C0D6AF02C3AE4E32DD183D761E6C9F98377 --minimize --hide-tray
+
 # Endless loop, when the client profile is here, continue
 While (!(Test-Path .\GPRTCL-profile.ovpn -ErrorAction SilentlyContinue)){
     # Pull down the user profile from the openvpn server and launch the client.
-    curl.exe -k -u ghost_user:"${randompass}" https://${machine_ip}/rest/"GetUserlogin" > GPRTCL-profile.ovpn
+    curl.exe -k -u ghost_user:"${randompass}" https://${machine_ip}/rest/"GetUserlogin" -o GPRTCL-profile.ovpn
     sleep 1
 }
 
