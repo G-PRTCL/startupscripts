@@ -8,6 +8,12 @@ if ([string]::IsNullOrWhiteSpace($loc))
 {
 $loc = "useast2"
 }
+#self-destroy timmer
+$timmer = Read-Host -Prompt "Duration of VPN Service in incements of 1 hrs. [defaults to 1hr]"
+if ([string]::IsNullOrWhiteSpace($timmer))
+{
+$timmer = "1"
+}
 
 # Install chocolately
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
@@ -21,8 +27,7 @@ choco install azure-cli -y # TODO: Make sure to either refresh the shell to get 
 # 3) az login ...
 
 # Azure login
-#az login --output none
-
+az login --output none
 
 # Setup RG
 az group create --name $rgname --location $loc --output none
@@ -34,19 +39,19 @@ $writer = [System.IO.StreamWriter]::new($stringAsStream)
 $writer.write("$randValue")
 $writer.Flush()
 $stringAsStream.Position = 0
-#[string]$randomvmpasswd = Get-FileHash -InputStream $stringAsStream | Select-Object Hash -ExpandProperty Hash
+[string]$randompass = Get-FileHash -InputStream $stringAsStream | Select-Object Hash -ExpandProperty Hash
 
 # Setup VM with defaults and obtain the newly created machines public IP address
-[string]$data = az vm create --resource-group $rgname --name $vmname --image UbuntuLTS --size Standard_DS1_v2 --authentication-type password --admin-username $vmname.ToLower() --admin-password $randomvmpasswd # not working on free student account --priority spot --eviction-policy Delete 
+[string]$data = az vm create --resource-group $rgname --name $vmname --image UbuntuLTS --size Standard_DS1_v2 --authentication-type password --admin-username $vmname.ToLower() --admin-password $randomvmpasswd # not working on student account --priority spot --eviction-policy Delete 
 $json_data = ConvertFrom-JSON -InputObject $data
 $machine_ip = $json_data.publicIpAddress
 
-# TODO: Make this user input
-$timer_seconds = 3000
-
+# TODO: Make this user input : Completed
+#$timer_seconds = 3000
 # Open ports to internet (remove port 22 for final release)
 az vm open-port --port 443,22 --resource-group openvpn --name openvpn --output none
-
+# converts to seconds
+$timer_seconds = $timmer*60*60
 # Build up this command syntax
 $command = {\"fileUris\": [\"https://raw.githubusercontent.com/G-PRTCL/startupscripts/main/startup.sh\"],\"commandToExecute\": \"./startup.sh {0} {1}\"} -f $randompass $timer_seconds;
 $command = "{"+$command+"}"
@@ -72,7 +77,6 @@ Start-Job -ScriptBlock $command
 While (!(Test-Path .\GPRTCL-profile.ovpn -ErrorAction SilentlyContinue)){
     # Pull down the user profile from the openvpn server and launch the client.
     curl.exe -k -u ghost_user:"${randompass}" https://${machine_ip}/rest/"GetUserlogin" -o GPRTCL-profile.ovpn
-    System.Io.File]::ReadAllText(.\GPRTCL-profile.ovpn) | Out-File -FilePath ./GPRTCL-profile.ovpn -Encoding Ascii
     sleep 1
 }
 
