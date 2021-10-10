@@ -1,18 +1,39 @@
 # user prompts
+Write-host @"
+                                                                                                                                                                                                    
+                                                                                                                                                                                                    
+          GGGGGGGGGGGGGhhhhhhh                                                        tttt               PPPPPPPPPPPPPPPPP                                                    tttt          lllllll 
+       GGG::::::::::::Gh:::::h                                                     ttt:::t               P::::::::::::::::P                                                ttt:::t          l:::::l 
+     GG:::::::::::::::Gh:::::h                                                     t:::::t               P::::::PPPPPP:::::P                                               t:::::t          l:::::l 
+    G:::::GGGGGGGG::::Gh:::::h                                                     t:::::t               PP:::::P     P:::::P                                              t:::::t          l:::::l 
+   G:::::G       GGGGGG h::::h hhhhh          ooooooooooo       ssssssssss   ttttttt:::::ttttttt           P::::P     P:::::Prrrrr   rrrrrrrrr       ccccccccccccccccttttttt:::::ttttttt     l::::l 
+  G:::::G               h::::hh:::::hhh     oo:::::::::::oo   ss::::::::::s  t:::::::::::::::::t           P::::P     P:::::Pr::::rrr:::::::::r    cc:::::::::::::::ct:::::::::::::::::t     l::::l 
+  G:::::G               h::::::::::::::hh  o:::::::::::::::oss:::::::::::::s t:::::::::::::::::t           P::::PPPPPP:::::P r:::::::::::::::::r  c:::::::::::::::::ct:::::::::::::::::t     l::::l 
+  G:::::G    GGGGGGGGGG h:::::::hhh::::::h o:::::ooooo:::::os::::::ssss:::::stttttt:::::::tttttt           P:::::::::::::PP  rr::::::rrrrr::::::rc:::::::cccccc:::::ctttttt:::::::tttttt     l::::l 
+  G:::::G    G::::::::G h::::::h   h::::::ho::::o     o::::o s:::::s  ssssss       t:::::t                 P::::PPPPPPPPP     r:::::r     r:::::rc::::::c     ccccccc      t:::::t           l::::l 
+  G:::::G    GGGGG::::G h:::::h     h:::::ho::::o     o::::o   s::::::s            t:::::t                 P::::P             r:::::r     rrrrrrrc:::::c                   t:::::t           l::::l 
+  G:::::G        G::::G h:::::h     h:::::ho::::o     o::::o      s::::::s         t:::::t                 P::::P             r:::::r            c:::::c                   t:::::t           l::::l 
+   G:::::G       G::::G h:::::h     h:::::ho::::o     o::::ossssss   s:::::s       t:::::t    tttttt       P::::P             r:::::r            c::::::c     ccccccc      t:::::t    tttttt l::::l 
+    G:::::GGGGGGGG::::G h:::::h     h:::::ho:::::ooooo:::::os:::::ssss::::::s      t::::::tttt:::::t     PP::::::PP           r:::::r            c:::::::cccccc:::::c      t::::::tttt:::::tl::::::l
+     GG:::::::::::::::G h:::::h     h:::::ho:::::::::::::::os::::::::::::::s       tt::::::::::::::t     P::::::::P           r:::::r             c:::::::::::::::::c      tt::::::::::::::tl::::::l
+       GGG::::::GGG:::G h:::::h     h:::::h oo:::::::::::oo  s:::::::::::ss          tt:::::::::::tt     P::::::::P           r:::::r              cc:::::::::::::::c        tt:::::::::::ttl::::::l
+          GGGGGG   GGGG hhhhhhh     hhhhhhh   ooooooooooo     sssssssssss              ttttttttttt       PPPPPPPPPP           rrrrrrr                cccccccccccccccc          ttttttttttt  llllllll
+                                                                                                                                                                                             
+"@
 $rgname = -join ((65..80) + (97..100) | Get-Random -Count 10 | % {[char]$_})
 $vmname = -join ((65..80) + (97..100) | Get-Random -Count 14 | % {[char]$_})
 $randomvmpasswd = -join ((0x30..0x39) + ( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 20  | % {[char]$_}) # The password length must be between 12 and 72. Password must have the 3 of the following: 1 lower case character, 1 upper case character, 1 number and 1 special character.
 #set location based on user input, else defaults to USEast
-$loc = Read-Host -Prompt "Provide the location to host your VPN service [defaults to useast]"
+$loc = Read-Host -Prompt "Provide the location to host your VPN service [defaults to USA]"
 if ([string]::IsNullOrWhiteSpace($loc))
 {
-$loc = "useast2"
+$loc = "eastus2"
 }
 #self-destroy timmer
-$timmer = Read-Host -Prompt "Duration of VPN Service in incements of 1 hrs. [defaults to 1hr]"
-if ([string]::IsNullOrWhiteSpace($timmer))
+$timer = Read-Host -Prompt "Duration of VPN Service in incements of 1 hrs. [defaults to 1hr]"
+if ([string]::IsNullOrWhiteSpace($timer))
 {
-$timmer = "1"
+$timer = 1
 }
 
 # Install chocolately
@@ -42,7 +63,7 @@ $stringAsStream.Position = 0
 [string]$randompass = Get-FileHash -InputStream $stringAsStream | Select-Object Hash -ExpandProperty Hash
 
 # Setup VM with defaults and obtain the newly created machines public IP address
-[string]$data = az vm create --resource-group $rgname --name $vmname --image UbuntuLTS --size Standard_DS1_v2 --authentication-type password --admin-username $vmname.ToLower() --admin-password $randomvmpasswd # not working on student account --priority spot --eviction-policy Delete 
+[string]$data = az vm create --resource-group $rgname --name $vmname --image UbuntuLTS --size Standard_DS1_v2 --authentication-type password --admin-username $vmname.ToLower() --admin-password $randomvmpasswd --public-ip-sku Standard # not working on student account --priority spot --eviction-policy Delete 
 $json_data = ConvertFrom-JSON -InputObject $data
 $machine_ip = $json_data.publicIpAddress
 
@@ -51,9 +72,9 @@ $machine_ip = $json_data.publicIpAddress
 # Open ports to internet (remove port 22 for final release)
 az vm open-port --port 443,22 --resource-group openvpn --name openvpn --output none
 # converts to seconds
-$timer_seconds = $timmer*60*60
+$timer_seconds = $timer*60*60
 # Build up this command syntax
-$command = {\"fileUris\": [\"https://raw.githubusercontent.com/G-PRTCL/startupscripts/main/startup.sh\"],\"commandToExecute\": \"./startup.sh {0} {1}\"} -f $randompass $timer_seconds;
+$command = {\"fileUris\": [\"https://raw.githubusercontent.com/G-PRTCL/startupscripts/main/startup.sh\"],\"commandToExecute\": \"./startup.sh {0} {1}\"} -f $randompass, $timer_seconds;
 $command = "{"+$command+"}"
 $command = "az vm extension set --resource-group openvpn --vm-name openvpn --name customScript --publisher Microsoft.Azure.Extensions --protected-settings '$command'"
 $command = [scriptblock]::Create("$command")
