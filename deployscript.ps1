@@ -67,24 +67,19 @@ $stringAsStream.Position = 0
 $json_data = ConvertFrom-JSON -InputObject $data
 $machine_ip = $json_data.publicIpAddress
 
-# TODO: Make this user input : Completed
-#$timer_seconds = 3000
 # Open ports to internet (remove port 22 for final release)
-az vm open-port --port 443,22 --resource-group openvpn --name openvpn --output none
+az vm open-port --port 443,22 --resource-group $rgname --name $vmname --output none
+
 # converts to seconds
 $timer_seconds = $timer*60*60
 # Build up this command syntax
 $command = {\"fileUris\": [\"https://raw.githubusercontent.com/G-PRTCL/startupscripts/main/startup.sh\"],\"commandToExecute\": \"./startup.sh {0} {1}\"} -f $randompass, $timer_seconds;
 $command = "{"+$command+"}"
-$command = "az vm extension set --resource-group openvpn --vm-name openvpn --name customScript --publisher Microsoft.Azure.Extensions --protected-settings '$command'"
+$command = "az vm extension set --resource-group $rgname --vm-name $vmname --name customScript --publisher Microsoft.Azure.Extensions --protected-settings '$command'"
 $command = [scriptblock]::Create("$command")
 
 # Install docker and run openvpn container (Asyncronous version of the command)
 Start-Job -ScriptBlock $command
-# Update start up script to move password variable into a file (into the github startup.sh).
-
-# Start-Job -ScriptBlock{ az vm extension set --resource-group openvpn --vm-name openvpn --name customScript --publisher Microsoft.Azure.Extensions --protected-settings $command }
-
 
 # TODO: Incoporate these into the script
 
@@ -105,10 +100,20 @@ While (!(Test-Path .\GPRTCL-profile.ovpn -ErrorAction SilentlyContinue)){
 #echo "ghost_user`n${randompass}`n" > pass.txt
 
 # login into open vpn using the config file
-openvpn --config ./GPRTCL-profile.ovpn --auth-user-pass pass.txt
+# openvpn --config ./GPRTCL-profile.ovpn --auth-user-pass pass.txt
 
 # Remove the pass.txt file as it is no longer needed (leave no trace)
-del pass.txt
+# del pass.txt
+
+# Loop based on timer (in hours)
+$loop_timeout = new-timespan -Seconds $timer_seconds
+$sw = [diagnostics.stopwatch]::StartNew()
+while ($sw.elapsed -lt $loop_timeout){
+  start-sleep -seconds 1
+}
+
+Write-host " Deleting your VPN service"
+az group delete --name $rgname --yes
 
 # Delete the resource group and machine
 # az group delete --resource-group openvpn --yes
