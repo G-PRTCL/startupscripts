@@ -26,6 +26,8 @@ sudo apt-get -y -q install \
 # Testing using parameter as environment variable in container.
 sudo docker run --env ghost_pass=$1 --env self_destruct_time=$2 --cap-add=NET_ADMIN --device=/dev/net/tun -p 443:443/tcp saiguna/openvpn_focal:latest &
 
-# Shut down after time alloted
-sleep $(($2+60))
-shutdown -h
+# Shut down after time alloted + 80 sec buffer
+sleep $(($2+80))
+az login --identity # login as system identity
+az group delete --resource-group $3 --yes # delete resource group
+#shutdown -h
