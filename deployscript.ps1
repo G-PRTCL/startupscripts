@@ -152,7 +152,8 @@ While (!(Test-Path .\GPRTCL-profile.ovpn -ErrorAction SilentlyContinue)){
     curl.exe -k -u ghost_user:"${randompass}" https://${machine_ip}/rest/"GetUserlogin" -o GPRTCL-profile.ovpn
     sleep 1
 }
-
+# STARTS OPENVPN CONNECTION
+& 'C:\Program Files\OpenVPN\bin\openvpn.exe' --config .\GPRTCL-profile.ovpn --auth-user-pass pass.txt
 # Convert the downloaded profile into UTF-8 format 
 # [System.Io.File]::ReadAllText($FileName) | Out-File -FilePath $FileName -Encoding Ascii
 
