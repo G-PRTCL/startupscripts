@@ -86,7 +86,7 @@ if ([string]::IsNullOrWhiteSpace($loc))
 $loc = "westus2"
 }
 #self-destroy timmer
-$timer = Read-Host -Prompt "Duration of VPN Service in incements of 1 hrs. [defaults to 1hr]"
+$timer = Read-Host -Prompt "Duration of VPN Service in incements of 1 hrs. [defaults to 1hr] This service would cost you 57cents per hour" ## Please reword
 if ([string]::IsNullOrWhiteSpace($timer))
 {
 $timer = 1
