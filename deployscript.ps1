@@ -110,6 +110,17 @@ openvpn --config ./GPRTCL-profile.ovpn --auth-user-pass pass.txt
 # Remove the pass.txt file as it is no longer needed (leave no trace)
 del pass.txt
 
+## Timer Block
+while ($timer_seconds -ge 0)
+{
+  Write-host = "Time Remaining: $(($timer_seconds/60)/60) hrs."
+  start-sleep 1800 # 30 min
+  $timer_seconds -= 1800 # substract 30 min
+  if ($timer_seconds -eq 0) {
+    Write-host " Deleting your VPN service"
+    az group delete --name $rgname --yes
+  }
+}
 # Delete the resource group and machine
 # az group delete --resource-group openvpn --yes
 # TODO: ADD THIS FEATURE: Az vm create (option to auto delete on shutdown)
