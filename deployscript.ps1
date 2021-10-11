@@ -19,7 +19,7 @@ Write-host @"
 #     # #     # #     #       #    #       #       #   #   #          #    #       
 #     # #     # #     # #     #    #       #       #    #  #     #    #    #       
  #####  #     # #######  #####     #       #       #     #  #####     #    ####### 
- "@
+"@
 
 Write-host @"
 ╭━━━┳╮╱╭┳━━━┳━━━┳━━━━╮╭━━━┳━━━┳━━━┳━━━━┳╮
@@ -47,7 +47,6 @@ Write-host @"
 "@
 
 Write-host @"
-
 ░██████╗░██╗░░██╗░█████╗░░██████╗████████╗  ██████╗░██████╗░░█████╗░████████╗██╗░░░░░
 ██╔════╝░██║░░██║██╔══██╗██╔════╝╚══██╔══╝  ██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██║░░░░░
 ██║░░██╗░███████║██║░░██║╚█████╗░░░░██║░░░  ██████╔╝██████╔╝██║░░╚═╝░░░██║░░░██║░░░░░
@@ -84,7 +83,7 @@ $randomvmpasswd = -join ((0x30..0x39) + ( 0x41..0x5A) + ( 0x61..0x7A) | Get-Rand
 $loc = Read-Host -Prompt "Provide the location to host your VPN service [defaults to USA]"
 if ([string]::IsNullOrWhiteSpace($loc))
 {
-$loc = "eastus2"
+$loc = "westus2"
 }
 #self-destroy timmer
 $timer = Read-Host -Prompt "Duration of VPN Service in incements of 1 hrs. [defaults to 1hr]"
@@ -92,6 +91,14 @@ if ([string]::IsNullOrWhiteSpace($timer))
 {
 $timer = 1
 }
+
+# Install openvpn daemon
+Invoke-WebRequest -Uri "https://swupdate.openvpn.org/community/releases/OpenVPN-2.5.4-I602-amd64.msi" -OutFile .\OpenVPN-2.5.4-I602-amd64.msi
+msiexec /i OpenVPN-2.5.4-I602-amd64.msi /quiet
+$env:Path += ";C:\Program Files\OpenVPN\bin"
+
+# Clean up after ourselves
+del OpenVPN-2.5.4-I602-amd64.msi
 
 # Install chocolatey
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
@@ -136,18 +143,18 @@ $command = [scriptblock]::Create("$command")
 # Install docker and run openvpn container (Asyncronous version of the command)
 Start-Job -ScriptBlock $command
 
-# Convert the downloaded profile into UTF-8 format 
-# [System.Io.File]::ReadAllText($FileName) | Out-File -FilePath $FileName -Encoding Ascii
-
-# Command to connect to the openvpn
-# .\OpenVPNConnect.exe --accept-gdpr --import-profile="C:\Program Files\OpenVPN Connect\GPRTCL-profile.ovpn" --username=ghost_user --password=182D24B6CBCEC2B2EFEABB22F7617C0D6AF02C3AE4E32DD183D761E6C9F98377 --minimize --hide-tray
-
 # Endless loop, when the client profile is here, continue
 While (!(Test-Path .\GPRTCL-profile.ovpn -ErrorAction SilentlyContinue)){
     # Pull down the user profile from the openvpn server and launch the client.
     curl.exe -k -u ghost_user:"${randompass}" https://${machine_ip}/rest/"GetUserlogin" -o GPRTCL-profile.ovpn
     sleep 1
 }
+
+# Convert the downloaded profile into UTF-8 format 
+# [System.Io.File]::ReadAllText($FileName) | Out-File -FilePath $FileName -Encoding Ascii
+
+# Command to connect to the openvpn
+# .\OpenVPNConnect.exe --accept-gdpr --import-profile="C:\Program Files\OpenVPN Connect\GPRTCL-profile.ovpn" --username=ghost_user --password=182D24B6CBCEC2B2EFEABB22F7617C0D6AF02C3AE4E32DD183D761E6C9F98377 --minimize --hide-tray
 
 # Create a pass.txt file for openvpn login without prompt
 #echo "ghost_user`n${randompass}`n" > pass.txt
@@ -165,9 +172,9 @@ while ($sw.elapsed -lt $loop_timeout){
   start-sleep -seconds 1
 }
 
+# Delete the resource group and machine
 Write-host " Deleting your VPN service"
 az group delete --name $rgname --yes
 
-# Delete the resource group and machine
 # az group delete --resource-group openvpn --yes
 # TODO: ADD THIS FEATURE: Az vm create (option to auto delete on shutdown)
