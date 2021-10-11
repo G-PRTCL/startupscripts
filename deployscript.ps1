@@ -36,16 +36,14 @@ if ([string]::IsNullOrWhiteSpace($timer))
 $timer = 1
 }
 
-# Install chocolately
+# Install chocolatey
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 # Install Azure CLi
-choco install azure-cli -y # TODO: Make sure to either refresh the shell to get az command in PATH or switch to the dir with the az EXE.
+choco install azure-cli -y
 
-# Once solution:
-# 1) cmd.exe
-# 2) refreshenv
-# 3) az login ...
+# After installing packages from chocolatey, refresh powershell environment variables
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 
 # Azure login
 az login --output none
@@ -80,8 +78,6 @@ $command = [scriptblock]::Create("$command")
 
 # Install docker and run openvpn container (Asyncronous version of the command)
 Start-Job -ScriptBlock $command
-
-# TODO: Incoporate these into the script
 
 # Convert the downloaded profile into UTF-8 format 
 # [System.Io.File]::ReadAllText($FileName) | Out-File -FilePath $FileName -Encoding Ascii
