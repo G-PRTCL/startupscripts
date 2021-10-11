@@ -176,6 +176,7 @@ while ($sw.elapsed -lt $loop_timeout){
 }
 
 # Delete the resource group and machine
+## THIS MIGHT REDUNDANT GIVEN THAT THE MACHINE IS GOING TO DELETED EVERYTHING
 Write-host " Deleting your VPN service"
 az group delete --name $rgname --yes
 
