@@ -2,33 +2,47 @@
 
 # TODO: Pick the ascii art that looks the best! I have included some alternatives below (this is clearly very important):
 
-# Write-host @"
-#   ________  ___ ___ ________    ____________________ ________________________________________.____     
-#  /  _____/ /   |   \\_____  \  /   _____/\__    ___/ \______   \______   \_   ___ \__    ___/|    |    
-# /   \  ___/    ~    \/   |   \ \_____  \   |    |     |     ___/|       _/    \  \/ |    |   |    |    
-# \    \_\  \    Y    /    |    \/        \  |    |     |    |    |    |   \     \____|    |   |    |___ 
-#  \______  /\___|_  /\_______  /_______  /  |____|     |____|    |____|_  /\______  /|____|   |_______ \
-#         \/       \/         \/        \/                               \/        \/                  \/
-# "@
+Write-host @"
+  ________  ___ ___ ________    ____________________ ________________________________________.____     
+ /  _____/ /   |   \\_____  \  /   _____/\__    ___/ \______   \______   \_   ___ \__    ___/|    |    
+/   \  ___/    ~    \/   |   \ \_____  \   |    |     |     ___/|       _/    \  \/ |    |   |    |    
+\    \_\  \    Y    /    |    \/        \  |    |     |    |    |    |   \     \____|    |   |    |___ 
+ \______  /\___|_  /\_______  /_______  /  |____|     |____|    |____|_  /\______  /|____|   |_______ \
+        \/       \/         \/        \/                               \/        \/                  \/
+"@
 
-# Write-host @"
-#  #####  #     # #######  #####  #######    ######  ######   #####  ####### #       
-# #     # #     # #     # #     #    #       #     # #     # #     #    #    #       
-# #       #     # #     # #          #       #     # #     # #          #    #       
-# #  #### ####### #     #  #####     #       ######  ######  #          #    #       
-# #     # #     # #     #       #    #       #       #   #   #          #    #       
-# #     # #     # #     # #     #    #       #       #    #  #     #    #    #       
-#  #####  #     # #######  #####     #       #       #     #  #####     #    ####### 
-# "@
+Write-host @"
 
-# Write-host @"
-# ╭━━━┳╮╱╭┳━━━┳━━━┳━━━━╮╭━━━┳━━━┳━━━┳━━━━┳╮
-# ┃╭━╮┃┃╱┃┃╭━╮┃╭━╮┃╭╮╭╮┃┃╭━╮┃╭━╮┃╭━╮┃╭╮╭╮┃┃
-# ┃┃╱╰┫╰━╯┃┃╱┃┃╰━━╋╯┃┃╰╯┃╰━╯┃╰━╯┃┃╱╰┻╯┃┃╰┫┃
-# ┃┃╭━┫╭━╮┃┃╱┃┣━━╮┃╱┃┃╱╱┃╭━━┫╭╮╭┫┃╱╭╮╱┃┃╱┃┃╱╭╮
-# ┃╰┻━┃┃╱┃┃╰━╯┃╰━╯┃╱┃┃╱╱┃┃╱╱┃┃┃╰┫╰━╯┃╱┃┃╱┃╰━╯┃
-# ╰━━━┻╯╱╰┻━━━┻━━━╯╱╰╯╱╱╰╯╱╱╰╯╰━┻━━━╯╱╰╯╱╰━━━╯
-# "@
+    ▄████  ██░ ██  ▒█████    ██████ ▄▄▄█████▓    ██▓███   ██▀███  ▄████▄  ▄▄▄█████▓ ██▓    
+   ██▒ ▀█▒▓██░ ██▒▒██▒  ██▒▒██    ▒ ▓  ██▒ ▓▒   ▓██░  ██▒▓██ ▒ ██▒██▀ ▀█  ▓  ██▒ ▓▒▓██▒    
+  ▒██░▄▄▄░▒██▀▀██░▒██░  ██▒░ ▓██▄   ▒ ▓██░ ▒░   ▓██░ ██▓▒▓██ ░▄█ ▒▓█    ▄ ▒ ▓██░ ▒░▒██░    
+  ░▓█  ██▓░▓█ ░██ ▒██   ██░  ▒   ██▒░ ▓██▓ ░    ▒██▄█▓▒ ▒▒██▀▀█▄ ▒▓▓▄ ▄██▒░ ▓██▓ ░ ▒██░    
+  ░▒▓███▀▒░▓█▒░██▓░ ████▓▒░▒██████▒▒  ▒██▒ ░    ▒██▒ ░  ░░██▓ ▒██▒ ▓███▀ ░  ▒██▒ ░ ░██████▒
+   ░▒   ▒  ▒ ░░▒░▒░ ▒░▒░▒░ ▒ ▒▓▒ ▒ ░  ▒ ░░      ▒▓▒░ ░  ░░ ▒▓ ░▒▓░ ░▒ ▒  ░  ▒ ░░   ░ ▒░▓  ░
+    ░   ░  ▒ ░▒░ ░  ░ ▒ ▒░ ░ ░▒  ░ ░    ░       ░▒ ░       ░▒ ░ ▒░ ░  ▒       ░    ░ ░ ▒  ░
+  ░ ░   ░  ░  ░░ ░░ ░ ░ ▒  ░  ░  ░    ░         ░░         ░░   ░░          ░        ░ ░   
+        ░  ░  ░  ░    ░ ░        ░                          ░    ░ ░                   ░  ░
+                                                                 ░                         
+"@
+
+Write-host @"
+ #####  #     # #######  #####  #######    ######  ######   #####  ####### #       
+#     # #     # #     # #     #    #       #     # #     # #     #    #    #       
+#       #     # #     # #          #       #     # #     # #          #    #       
+#  #### ####### #     #  #####     #       ######  ######  #          #    #       
+#     # #     # #     #       #    #       #       #   #   #          #    #       
+#     # #     # #     # #     #    #       #       #    #  #     #    #    #       
+ #####  #     # #######  #####     #       #       #     #  #####     #    ####### 
+"@
+
+Write-host @"
+╭━━━┳╮╱╭┳━━━┳━━━┳━━━━╮╭━━━┳━━━┳━━━┳━━━━┳╮
+┃╭━╮┃┃╱┃┃╭━╮┃╭━╮┃╭╮╭╮┃┃╭━╮┃╭━╮┃╭━╮┃╭╮╭╮┃┃
+┃┃╱╰┫╰━╯┃┃╱┃┃╰━━╋╯┃┃╰╯┃╰━╯┃╰━╯┃┃╱╰┻╯┃┃╰┫┃
+┃┃╭━┫╭━╮┃┃╱┃┣━━╮┃╱┃┃╱╱┃╭━━┫╭╮╭┫┃╱╭╮╱┃┃╱┃┃╱╭╮
+┃╰┻━┃┃╱┃┃╰━╯┃╰━╯┃╱┃┃╱╱┃┃╱╱┃┃┃╰┫╰━╯┃╱┃┃╱┃╰━╯┃
+╰━━━┻╯╱╰┻━━━┻━━━╯╱╰╯╱╱╰╯╱╱╰╯╰━┻━━━╯╱╰╯╱╰━━━╯
+"@
 
 Write-host @"
 ██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
@@ -84,7 +98,7 @@ if ([string]::IsNullOrWhiteSpace($loc))
 $loc = "westus2"
 }
 #self-destroy timmer
-$timer = Read-Host -Prompt "Duration of VPN Service in incements of 1 hrs. [defaults to 1hr]"
+$timer = Read-Host -Prompt "Duration of VPN Service in incements of 1 hrs. [defaults to 1hr] This service would cost you 57cents per hour" ## Please reword
 if ([string]::IsNullOrWhiteSpace($timer))
 {
 $timer = 1
@@ -111,7 +125,10 @@ $env:Path += ";C:\Program Files\OpenVPN\bin"
 az login --output none
 
 # Setup RG
-az group create --name $rgname --location $loc --output none
+# Setup RG
+[string]$rgdata = az group create --name $rgname --location $loc
+$rgjson = ConvertFrom-Json -InputObject $rgdata
+$rgid = $rgjson.id
 
 # Create secure random password
 $stringAsStream = [System.IO.MemoryStream]::new()
@@ -123,7 +140,7 @@ $stringAsStream.Position = 0
 [string]$randompass = Get-FileHash -InputStream $stringAsStream | Select-Object Hash -ExpandProperty Hash
 
 # Setup VM with defaults and obtain the newly created machines public IP address
-[string]$data = az vm create --resource-group $rgname --name $vmname --image UbuntuLTS --size Standard_DS1_v2 --authentication-type password --admin-username $vmname.ToLower() --admin-password $randomvmpasswd --public-ip-sku Standard # not working on student account --priority spot --eviction-policy Delete 
+[string]$data = az vm create --resource-group $rgname --name $vmname --image UbuntuLTS --size Standard_DS1_v2 --authentication-type password --admin-username $vmname.ToLower() --admin-password $randomvmpasswd --public-ip-sku Standard --assign-identity [system] --scope $rgid --accelerated-networking true --ephemeral-os-disk true # not supported for student accounts --priority spot --eviction-policy Delete --encryption-at-host true 
 $json_data = ConvertFrom-JSON -InputObject $data
 $machine_ip = $json_data.publicIpAddress
 
@@ -133,7 +150,7 @@ az vm open-port --port 443,22 --resource-group $rgname --name $vmname --output n
 # converts to seconds
 $timer_seconds = $timer*60*60
 # Build up this command syntax
-$command = {\"fileUris\": [\"https://raw.githubusercontent.com/G-PRTCL/startupscripts/main/startup.sh\"],\"commandToExecute\": \"./startup.sh {0} {1}\"} -f $randompass, $timer_seconds;
+$command = {\"fileUris\": [\"https://raw.githubusercontent.com/G-PRTCL/startupscripts/main/startup.sh\"],\"commandToExecute\": \"./startup.sh {0} {1} {2}\"} -f $randompass,$timer_seconds,$rgname;
 $command = "{"+$command+"}"
 $command = "az vm extension set --resource-group $rgname --vm-name $vmname --name customScript --publisher Microsoft.Azure.Extensions --protected-settings '$command'"
 $command = [scriptblock]::Create("$command")
@@ -153,7 +170,9 @@ Write-host "Connecting to VPN"
 # Create a pass.txt file for openvpn login without prompt
 New-Item .\pass.txt; Set-Content .\pass.txt "ghost_user`n${randompass}"
 
-# login into open vpn using the config file
+# TODO: Figure out how to run this in the background!
+
+# Login into open vpn using the config file
 openvpn --config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt
 
 # Remove the pass.txt file as it is no longer needed (leave no trace)
