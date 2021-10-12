@@ -90,6 +90,7 @@ Write-host @"
 "@
 $rgname = -join ((65..80) + (97..100) | Get-Random -Count 10 | % {[char]$_})
 $vmname = -join ((65..80) + (97..100) | Get-Random -Count 14 | % {[char]$_})
+$winvmname = -join ((65..80) + (97..100) | Get-Random -Count 14 | % {[char]$_})
 $randomvmpasswd = -join ((0x30..0x39) + ( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 20  | % {[char]$_}) # The password length must be between 12 and 72. Password must have the 3 of the following: 1 lower case character, 1 upper case character, 1 number and 1 special character.
 #set location based on user input, else defaults to USEast
 $loc = Read-Host -Prompt "Provide the location to host your VPN service [defaults to USA]"
@@ -144,8 +145,9 @@ echo $randompass
 [string]$data = az vm create --resource-group $rgname --name $vmname --image UbuntuLTS --size Standard_DS1_v2 --authentication-type password --admin-username $vmname.ToLower() --admin-password $randomvmpasswd --public-ip-sku Standard --assign-identity [system] --scope $rgid --accelerated-networking true --ephemeral-os-disk true # not supported for student accounts --priority spot --eviction-policy Delete --encryption-at-host true 
 $json_data = ConvertFrom-JSON -InputObject $data
 $machine_ip = $json_data.publicIpAddress
-echo $machine_ip
-
+#get local network details
+[string]$network = az network vnet list --resource-group $rgname
+$json_network = ConvertFrom-JSON -InputObject $network
 # Open ports to internet (remove port 22 for final release)
 az vm open-port --port 443,22 --resource-group $rgname --name $vmname --output none
 
@@ -159,6 +161,11 @@ $command = [scriptblock]::Create("$command")
 
 # Install docker and run openvpn container (Asyncronous version of the command)
 Start-Job -ScriptBlock $command
+# deploys windows machine into existing network, keeping the VM in the same RG to enable self destruct 
+# TODO: make this a optional based on user input
+[string]$winvm = az vm create --resource-group $rgname --name $winvmname --vnet-name $json_network.name --subnet $json_network.subnets.name --image Win2019Datacenter --authentication-type password --admin-username $vmname.ToLower() --admin-password $randomvmpasswd --accelerated-networking true # not supported for student accounts --priority spot --eviction-policy Delete --encryption-at-host true
+$json_winvm = ConvertFrom-JSON -InputObject $winvm
+$win_machine_ip = $json_winvm.publicIpAddress
 
 Write-host "Downloading profile ..."
 
