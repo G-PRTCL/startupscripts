@@ -2,33 +2,33 @@
 
 # TODO: Pick the ascii art that looks the best! I have included some alternatives below (this is clearly very important):
 
-Write-host @"
-  ________  ___ ___ ________    ____________________ ________________________________________.____     
- /  _____/ /   |   \\_____  \  /   _____/\__    ___/ \______   \______   \_   ___ \__    ___/|    |    
-/   \  ___/    ~    \/   |   \ \_____  \   |    |     |     ___/|       _/    \  \/ |    |   |    |    
-\    \_\  \    Y    /    |    \/        \  |    |     |    |    |    |   \     \____|    |   |    |___ 
- \______  /\___|_  /\_______  /_______  /  |____|     |____|    |____|_  /\______  /|____|   |_______ \
-        \/       \/         \/        \/                               \/        \/                  \/
-"@
+# Write-host @"
+#   ________  ___ ___ ________    ____________________ ________________________________________.____     
+#  /  _____/ /   |   \\_____  \  /   _____/\__    ___/ \______   \______   \_   ___ \__    ___/|    |    
+# /   \  ___/    ~    \/   |   \ \_____  \   |    |     |     ___/|       _/    \  \/ |    |   |    |    
+# \    \_\  \    Y    /    |    \/        \  |    |     |    |    |    |   \     \____|    |   |    |___ 
+#  \______  /\___|_  /\_______  /_______  /  |____|     |____|    |____|_  /\______  /|____|   |_______ \
+#         \/       \/         \/        \/                               \/        \/                  \/
+# "@
 
-Write-host @"
- #####  #     # #######  #####  #######    ######  ######   #####  ####### #       
-#     # #     # #     # #     #    #       #     # #     # #     #    #    #       
-#       #     # #     # #          #       #     # #     # #          #    #       
-#  #### ####### #     #  #####     #       ######  ######  #          #    #       
-#     # #     # #     #       #    #       #       #   #   #          #    #       
-#     # #     # #     # #     #    #       #       #    #  #     #    #    #       
- #####  #     # #######  #####     #       #       #     #  #####     #    ####### 
-"@
+# Write-host @"
+#  #####  #     # #######  #####  #######    ######  ######   #####  ####### #       
+# #     # #     # #     # #     #    #       #     # #     # #     #    #    #       
+# #       #     # #     # #          #       #     # #     # #          #    #       
+# #  #### ####### #     #  #####     #       ######  ######  #          #    #       
+# #     # #     # #     #       #    #       #       #   #   #          #    #       
+# #     # #     # #     # #     #    #       #       #    #  #     #    #    #       
+#  #####  #     # #######  #####     #       #       #     #  #####     #    ####### 
+# "@
 
-Write-host @"
-╭━━━┳╮╱╭┳━━━┳━━━┳━━━━╮╭━━━┳━━━┳━━━┳━━━━┳╮
-┃╭━╮┃┃╱┃┃╭━╮┃╭━╮┃╭╮╭╮┃┃╭━╮┃╭━╮┃╭━╮┃╭╮╭╮┃┃
-┃┃╱╰┫╰━╯┃┃╱┃┃╰━━╋╯┃┃╰╯┃╰━╯┃╰━╯┃┃╱╰┻╯┃┃╰┫┃
-┃┃╭━┫╭━╮┃┃╱┃┣━━╮┃╱┃┃╱╱┃╭━━┫╭╮╭┫┃╱╭╮╱┃┃╱┃┃╱╭╮
-┃╰┻━┃┃╱┃┃╰━╯┃╰━╯┃╱┃┃╱╱┃┃╱╱┃┃┃╰┫╰━╯┃╱┃┃╱┃╰━╯┃
-╰━━━┻╯╱╰┻━━━┻━━━╯╱╰╯╱╱╰╯╱╱╰╯╰━┻━━━╯╱╰╯╱╰━━━╯
-"@
+# Write-host @"
+# ╭━━━┳╮╱╭┳━━━┳━━━┳━━━━╮╭━━━┳━━━┳━━━┳━━━━┳╮
+# ┃╭━╮┃┃╱┃┃╭━╮┃╭━╮┃╭╮╭╮┃┃╭━╮┃╭━╮┃╭━╮┃╭╮╭╮┃┃
+# ┃┃╱╰┫╰━╯┃┃╱┃┃╰━━╋╯┃┃╰╯┃╰━╯┃╰━╯┃┃╱╰┻╯┃┃╰┫┃
+# ┃┃╭━┫╭━╮┃┃╱┃┣━━╮┃╱┃┃╱╱┃╭━━┫╭╮╭┫┃╱╭╮╱┃┃╱┃┃╱╭╮
+# ┃╰┻━┃┃╱┃┃╰━╯┃╰━╯┃╱┃┃╱╱┃┃╱╱┃┃┃╰┫╰━╯┃╱┃┃╱┃╰━╯┃
+# ╰━━━┻╯╱╰┻━━━┻━━━╯╱╰╯╱╱╰╯╱╱╰╯╰━┻━━━╯╱╰╯╱╰━━━╯
+# "@
 
 Write-host @"
 ██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████
@@ -56,8 +56,6 @@ Write-host @"
 "@
 
 Write-host @"
-                                                                                                                                                                                                    
-                                                                                                                                                                                                    
           GGGGGGGGGGGGGhhhhhhh                                                        tttt               PPPPPPPPPPPPPPPPP                                                    tttt          lllllll 
        GGG::::::::::::Gh:::::h                                                     ttt:::t               P::::::::::::::::P                                                ttt:::t          l:::::l 
      GG:::::::::::::::Gh:::::h                                                     t:::::t               P::::::PPPPPP:::::P                                               t:::::t          l:::::l 
@@ -95,7 +93,6 @@ $timer = 1
 # Install openvpn daemon
 Invoke-WebRequest -Uri "https://swupdate.openvpn.org/community/releases/OpenVPN-2.5.4-I602-amd64.msi" -OutFile .\OpenVPN-2.5.4-I602-amd64.msi
 msiexec /i OpenVPN-2.5.4-I602-amd64.msi /quiet
-$env:Path += ";C:\Program Files\OpenVPN\bin"
 
 # Clean up after ourselves
 del OpenVPN-2.5.4-I602-amd64.msi
@@ -108,6 +105,7 @@ choco install azure-cli -y
 
 # After installing packages from chocolatey, refresh powershell environment variables
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+$env:Path += ";C:\Program Files\OpenVPN\bin"
 
 # Azure login
 az login --output none
@@ -143,28 +141,25 @@ $command = [scriptblock]::Create("$command")
 # Install docker and run openvpn container (Asyncronous version of the command)
 Start-Job -ScriptBlock $command
 
+Write-host "Downloading profile ..."
 # Endless loop, when the client profile is here, continue
 While (!(Test-Path .\GPRTCL-profile.ovpn -ErrorAction SilentlyContinue)){
-    # Pull down the user profile from the openvpn server and launch the client.
-    curl.exe -k -u ghost_user:"${randompass}" https://${machine_ip}/rest/"GetUserlogin" -o GPRTCL-profile.ovpn
-    sleep 1
+    # Pull down the user profile silently from the openvpn server and launch the client.
+    curl.exe -k -s -u ghost_user:"${randompass}" https://${machine_ip}/rest/"GetUserlogin" -o GPRTCL-profile.ovpn # TODO: Figure out bug with this! (Downloads XML error but if re-run downloads correctly).
+    sleep 6
 }
-
-# Convert the downloaded profile into UTF-8 format 
-# [System.Io.File]::ReadAllText($FileName) | Out-File -FilePath $FileName -Encoding Ascii
-
-# Command to connect to the openvpn
-# .\OpenVPNConnect.exe --accept-gdpr --import-profile="C:\Program Files\OpenVPN Connect\GPRTCL-profile.ovpn" --username=ghost_user --password=182D24B6CBCEC2B2EFEABB22F7617C0D6AF02C3AE4E32DD183D761E6C9F98377 --minimize --hide-tray
+Write-host "Connecting to VPN"
 
 # Create a pass.txt file for openvpn login without prompt
-#echo "ghost_user`n${randompass}`n" > pass.txt
+New-Item .\pass.txt; Set-Content .\pass.txt "ghost_user`n${randompass}"
 
 # login into open vpn using the config file
-# openvpn --config ./GPRTCL-profile.ovpn --auth-user-pass pass.txt
+openvpn --config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt
 
 # Remove the pass.txt file as it is no longer needed (leave no trace)
-# del pass.txt
+del pass.txt
 
+Write-host "Looping until self-destruction"
 # Loop based on timer (in hours)
 $loop_timeout = new-timespan -Seconds $timer_seconds
 $sw = [diagnostics.stopwatch]::StartNew()
@@ -173,8 +168,5 @@ while ($sw.elapsed -lt $loop_timeout){
 }
 
 # Delete the resource group and machine
-Write-host " Deleting your VPN service"
+Write-host "Deleting your VPN service"
 az group delete --name $rgname --yes
-
-# az group delete --resource-group openvpn --yes
-# TODO: ADD THIS FEATURE: Az vm create (option to auto delete on shutdown)
