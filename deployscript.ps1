@@ -115,7 +115,7 @@ del OpenVPN-2.5.4-I602-amd64.msi
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 # Install Azure CLi
-choco install azure-cli -y
+choco install azure-cli -y --no-progress
 
 # After installing packages from chocolatey, refresh powershell environment variables
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -138,11 +138,13 @@ $writer.write("$randValue")
 $writer.Flush()
 $stringAsStream.Position = 0
 [string]$randompass = Get-FileHash -InputStream $stringAsStream | Select-Object Hash -ExpandProperty Hash
+echo $randompass
 
 # Setup VM with defaults and obtain the newly created machines public IP address
 [string]$data = az vm create --resource-group $rgname --name $vmname --image UbuntuLTS --size Standard_DS1_v2 --authentication-type password --admin-username $vmname.ToLower() --admin-password $randomvmpasswd --public-ip-sku Standard --assign-identity [system] --scope $rgid --accelerated-networking true --ephemeral-os-disk true # not supported for student accounts --priority spot --eviction-policy Delete --encryption-at-host true 
 $json_data = ConvertFrom-JSON -InputObject $data
 $machine_ip = $json_data.publicIpAddress
+echo $machine_ip
 
 # Open ports to internet (remove port 22 for final release)
 az vm open-port --port 443,22 --resource-group $rgname --name $vmname --output none
@@ -159,11 +161,18 @@ $command = [scriptblock]::Create("$command")
 Start-Job -ScriptBlock $command
 
 Write-host "Downloading profile ..."
+
 # Endless loop, when the client profile is here, continue
 While (!(Test-Path .\GPRTCL-profile.ovpn -ErrorAction SilentlyContinue)){
-    # Pull down the user profile silently from the openvpn server and launch the client.
-    curl.exe -k -s -u ghost_user:"${randompass}" https://${machine_ip}/rest/"GetUserlogin" -o GPRTCL-profile.ovpn # TODO: Figure out bug with this! (Downloads XML error but if re-run downloads correctly).
-    sleep 6
+
+  # Pull down the user profile silently from the openvpn server
+  $profile = curl.exe -k -s -u ghost_user:"${randompass}" https://${machine_ip}/rest/"GetUserlogin"
+
+  # Determine if correct profile was obtained.
+  if ($profile -like "*ghost_user@${machine_ip}*"){
+    curl.exe -k -s -u ghost_user:"${randompass}" https://${machine_ip}/rest/"GetUserlogin" -o GPRTCL-profile.ovpn
+  }
+  sleep 1
 }
 Write-host "Connecting to VPN"
 
@@ -175,8 +184,8 @@ New-Item .\pass.txt; Set-Content .\pass.txt "ghost_user`n${randompass}"
 # Login into open vpn using the config file
 openvpn --config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt
 
-# Remove the pass.txt file as it is no longer needed (leave no trace)
-del pass.txt
+# Remove the pass.txt and GPRTCL-profile.ovpn files as they are no longer needed (leave no trace)
+del pass.txt , GPRTCL-profile.ovpn
 
 Write-host "Looping until self-destruction"
 # Loop based on timer (in hours)
