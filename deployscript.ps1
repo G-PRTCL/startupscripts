@@ -100,7 +100,7 @@ $json_data = ConvertFrom-JSON -InputObject $data
 $machine_ip = $json_data.publicIpAddress
 
 #Role Assignment to enable self destruction
-az role assignment create --assignee $json_data.identity.systemAssignedIdentity --role "Contributor" --scope $rgid
+az role assignment create --assignee $json_data.identity.systemAssignedIdentity --role "Contributor" --scope $rgid --output none
 
 #Get local network details
 [string]$network = az network vnet list --resource-group $rgname
