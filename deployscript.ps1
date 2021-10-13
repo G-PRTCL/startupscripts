@@ -40,6 +40,14 @@ Write-host @"
    / / __/ __ \/ __ \/ ___/ __/  / /_/ / ___/ ___/ __/ / 
   / /_/ / / / / /_/ (__  ) /_   / ____/ /  / /__/ /_/ /  
   \____/_/ /_/\____/____/\__/  /_/   /_/   \___/\__/_/   
+********************************************************
+
+"@
+
+Write-host @"
+   +-+ +-+ +-+ +-+ +-+   +-+ +-+ +-+ +-+ +-+
+   |G| |h| |o| |s| |t|   |P| |r| |c| |t| |l|
+   +-+ +-+ +-+ +-+ +-+   +-+ +-+ +-+ +-+ +-+
 "@
 
 $rgname = -join ((65..80) + (97..100) | Get-Random -Count 10 | % {[char]$_})
@@ -71,6 +79,7 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 
 # Install Azure CLi
 choco install azure-cli -y --no-progress
+
 
 # After installing packages from chocolatey, refresh powershell environment variables
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -147,8 +156,8 @@ New-Item .\pass.txt; Set-Content .\pass.txt "ghost_user`n${randompass}"
 # TODO: Figure out how to run this in the background!
 
 # Login into open vpn using the config file
-Start-Process -FilePath "openvpn" -ArgumentList "--config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt" -WindowStyle Hidden
-#openvpn --config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt
+#Sart-Process -FilePath "openvpn" -ArgumentList "--config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt" -WindowStyle Hidden
+openvpn --config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt
 
 # Start-Process -FilePath "openvpn" -ArgumentList "--config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt" -NoNewWindow
 # Start-Process -FilePath "openvpn" -ArgumentList "--config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt" -WindowStyle Hidden
