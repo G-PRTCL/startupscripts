@@ -1,39 +1,5 @@
 # Print the project name for the user
 
-# TODO: Pick the ascii art that looks the best! I have included some alternatives below (this is clearly very important):
-
-Write-host @"
-  ________ .__                      __       __________ __________ _________ ___________.____      
- /  _____/ |  |__    ____   _______/  |_     \______   \\______   \\_   ___ \\__    ___/|    |     
-/   \  ___ |  |  \  /  _ \ /  ___/\   __\     |     ___/ |       _//    \  \/  |    |   |    |     
-\    \_\  \|   Y  \(  <_> )\___ \  |  |       |    |     |    |   \\     \____ |    |   |    |___  
- \______  /|___|  / \____//____  > |__|       |____|     |____|_  / \______  / |____|   |_______ \ 
-        \/      \/             \/                               \/         \/                   \/ 
-"@
-
-Write-host @"
-     _____ _               _     _____          _   _ 
-    / ____| |             | |   |  __ \        | | | |
-   | |  __| |__   ___  ___| |_  | |__) | __ ___| |_| |
-   | | |_ | '_ \ / _ \/ __| __| |  ___/ '__/ __| __| |
-   | |__| | | | | (_) \__ \ |_  | |   | | | (__| |_| |
-    \_____|_| |_|\___/|___/\__| |_|   |_|  \___|\__|_|
-"@
-
-Write-host @"
-        ___           ___           ___           ___           ___                    ___           ___           ___           ___           ___ 
-       /\  \         /\__\         /\  \         /\  \         /\  \                  /\  \         /\  \         /\  \         /\  \         /\__\
-      /::\  \       /:/  /        /::\  \       /::\  \        \:\  \                /::\  \       /::\  \       /::\  \        \:\  \       /:/  /
-     /:/\:\  \     /:/__/        /:/\:\  \     /:/\ \  \        \:\  \              /:/\:\  \     /:/\:\  \     /:/\:\  \        \:\  \     /:/  / 
-    /:/  \:\  \   /::\  \ ___   /:/  \:\  \   _\:\~\ \  \       /::\  \            /::\~\:\  \   /::\~\:\  \   /:/  \:\  \       /::\  \   /:/  /  
-   /:/__/_\:\__\ /:/\:\  /\__\ /:/__/ \:\__\ /\ \:\ \ \__\     /:/\:\__\          /:/\:\ \:\__\ /:/\:\ \:\__\ /:/__/ \:\__\     /:/\:\__\ /:/__/   
-   \:\  /\ \/__/ \/__\:\/:/  / \:\  \ /:/  / \:\ \:\ \/__/    /:/  \/__/          \/__\:\/:/  / \/_|::\/:/  / \:\  \  \/__/    /:/  \/__/ \:\  \   
-    \:\ \:\__\        \::/  /   \:\  /:/  /   \:\ \:\__\     /:/  /                    \::/  /     |:|::/  /   \:\  \         /:/  /       \:\  \  
-     \:\/:/  /        /:/  /     \:\/:/  /     \:\/:/  /     \/__/                      \/__/      |:|\/__/     \:\  \        \/__/         \:\  \ 
-      \::/  /        /:/  /       \::/  /       \::/  /                                            |:|  |        \:\__\                      \:\__\
-       \/__/         \/__/         \/__/         \/__/                                              \|__|         \/__/                       \/__/
-"@
-
 Write-host @"
      ________               __     ____            __  __
     / ____/ /_  ____  _____/ /_   / __ \__________/ /_/ /
@@ -44,12 +10,7 @@ Write-host @"
 
 "@
 
-Write-host @"
-   +-+ +-+ +-+ +-+ +-+   +-+ +-+ +-+ +-+ +-+
-   |G| |h| |o| |s| |t|   |P| |r| |c| |t| |l|
-   +-+ +-+ +-+ +-+ +-+   +-+ +-+ +-+ +-+ +-+
-"@
-
+#initilizing variables
 $rgname = -join ((65..80) + (97..100) | Get-Random -Count 10 | % {[char]$_})
 $vmname = -join ((65..80) + (97..100) | Get-Random -Count 14 | % {[char]$_})
 $winvmname = -join ((65..80) + (97..100) | Get-Random -Count 14 | % {[char]$_})
@@ -58,7 +19,7 @@ $randomvmpasswd = -join ((0x30..0x39) + ( 0x41..0x5A) + ( 0x61..0x7A) | Get-Rand
 $loc = Read-Host -Prompt "Provide the region to host your VPN service [defaults to USA]"
 if ([string]::IsNullOrWhiteSpace($loc))
 {
-$loc = "centralus"
+$loc = "centralus" #defaults to central US location
 }
 #self-destroy timmer
 $timer = Read-Host -Prompt "Duration of VPN Service in incements of 1 hrs. [defaults to 1hr] This service would cost you 5 cents per hour" ## Please reword
@@ -77,10 +38,8 @@ del OpenVPN-2.5.4-I602-amd64.msi
 
 # Install chocolatey
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-
 # Install Azure CLi
 choco install azure-cli -y --no-progress
-
 
 # After installing packages from chocolatey, refresh powershell environment variables
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
@@ -118,7 +77,7 @@ $json_network = ConvertFrom-JSON -InputObject $network
 
 # Open ports to internet (remove port 22 for final release)
 az vm open-port --port 443,22 --resource-group $rgname --name $vmname --output none
-
+Write-host "initiaiting OpenVPN deployment"
 # converts to seconds
 $timer_seconds = $timer*60*60
 # Build up this command syntax
@@ -147,7 +106,7 @@ While (!(Test-Path .\GPRTCL-profile.ovpn -ErrorAction SilentlyContinue)){
   if ($profile -like "*ghost_user@${machine_ip}*"){
     curl.exe -k -s -u ghost_user:"${randompass}" https://${machine_ip}/rest/"GetUserlogin" -o GPRTCL-profile.ovpn
   }
-  sleep 1
+  sleep 10
 }
 Write-host "Connecting to VPN"
 
