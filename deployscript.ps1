@@ -67,6 +67,7 @@ if ([string]::IsNullOrWhiteSpace($timer))
 $timer = 1
 }
 
+write-host "installing vpn client"
 # Install openvpn daemon
 Invoke-WebRequest -Uri "https://swupdate.openvpn.org/community/releases/OpenVPN-2.5.4-I602-amd64.msi" -OutFile .\OpenVPN-2.5.4-I602-amd64.msi
 msiexec /i OpenVPN-2.5.4-I602-amd64.msi /quiet
@@ -108,7 +109,7 @@ echo $randompass
 $json_data = ConvertFrom-JSON -InputObject $data
 $machine_ip = $json_data.publicIpAddress
 
-#Role Assignment to enable self destruction
+write-host "Role Assignment to enable self destruction"
 az role assignment create --assignee $json_data.identity.systemAssignedIdentity --role "Contributor" --scope $rgid --output none
 
 #Get local network details
@@ -130,7 +131,7 @@ $command = [scriptblock]::Create("$command")
 Start-Job -ScriptBlock $command
 # deploys windows machine into existing network, keeping the VM in the same RG to enable self destruct 
 # TODO: make this a optional based on user input
-[string]$winvm = az vm create --resource-group $rgname --name $winvmname --vnet-name $json_network.name --subnet $json_network.subnets.name --image Win2019Datacenter --admin-username $vmname.ToLower() --admin-password $randomvmpasswd # not supported for student accounts --priority spot --eviction-policy Delete --encryption-at-host true
+[string]$winvm = az vm create --resource-group $rgname --name $winvmname --vnet-name $json_network.name --subnet $json_network.subnets.name --image Win2019Datacenter --admin-username $vmname.ToLower() --admin-password $randomvmpasswd --patch-mode Manual # not supported for student accounts --priority spot --eviction-policy Delete --encryption-at-host true
 $json_winvm = ConvertFrom-JSON -InputObject $winvm
 $win_machine_ip = $json_winvm.publicIpAddress
 
