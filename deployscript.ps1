@@ -50,7 +50,7 @@ $randomvmpasswd = -join ((0x30..0x39) + ( 0x41..0x5A) + ( 0x61..0x7A) | Get-Rand
 $loc = Read-Host -Prompt "Provide the region to host your VPN service [defaults to USA]"
 if ([string]::IsNullOrWhiteSpace($loc))
 {
-$loc = "northcentralus"
+$loc = "centralus"
 }
 #self-destroy timmer
 $timer = Read-Host -Prompt "Duration of VPN Service in incements of 1 hrs. [defaults to 1hr] This service would cost you 5 cents per hour" ## Please reword
