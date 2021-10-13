@@ -126,7 +126,6 @@ $env:Path += ";C:\Program Files\OpenVPN\bin"
 az login --output none
 
 # Setup RG
-# Setup RG
 [string]$rgdata = az group create --name $rgname --location $loc
 $rgjson = ConvertFrom-Json -InputObject $rgdata
 $rgid = $rgjson.id
@@ -145,7 +144,8 @@ echo $randompass
 [string]$data = az vm create --resource-group $rgname --name $vmname --image UbuntuLTS --size Standard_DS1_v2 --authentication-type password --admin-username $vmname.ToLower() --admin-password $randomvmpasswd --public-ip-sku Standard --assign-identity [system] --scope $rgid --accelerated-networking true --ephemeral-os-disk true # not supported for student accounts --priority spot --eviction-policy Delete --encryption-at-host true 
 $json_data = ConvertFrom-JSON -InputObject $data
 $machine_ip = $json_data.publicIpAddress
-#get local network details
+
+# Get local network details
 [string]$network = az network vnet list --resource-group $rgname
 $json_network = ConvertFrom-JSON -InputObject $network
 # Open ports to internet (remove port 22 for final release)
@@ -190,6 +190,9 @@ New-Item .\pass.txt; Set-Content .\pass.txt "ghost_user`n${randompass}"
 
 # Login into open vpn using the config file
 openvpn --config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt
+
+# Start-Process -FilePath "openvpn" -ArgumentList "--config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt" -NoNewWindow
+# Start-Process -FilePath "openvpn" -ArgumentList "--config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt" -WindowStyle Hidden
 
 # Remove the pass.txt and GPRTCL-profile.ovpn files as they are no longer needed (leave no trace)
 del pass.txt , GPRTCL-profile.ovpn
