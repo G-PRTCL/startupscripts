@@ -106,7 +106,8 @@ While (!(Test-Path .\GPRTCL-profile.ovpn -ErrorAction SilentlyContinue)){
   if ($profile -like "*ghost_user@${machine_ip}*"){
     curl.exe -k -s -u ghost_user:"${randompass}" https://${machine_ip}/rest/"GetUserlogin" -o GPRTCL-profile.ovpn
   }
-  sleep 10
+  write-host "service not ready.. retrying in 5 seconds.. "
+  sleep 5
 }
 Write-host "Connecting to VPN"
 
