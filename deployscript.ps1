@@ -47,13 +47,13 @@ $vmname = -join ((65..80) + (97..100) | Get-Random -Count 14 | % {[char]$_})
 $winvmname = -join ((65..80) + (97..100) | Get-Random -Count 14 | % {[char]$_})
 $randomvmpasswd = -join ((0x30..0x39) + ( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 20  | % {[char]$_}) # The password length must be between 12 and 72. Password must have the 3 of the following: 1 lower case character, 1 upper case character, 1 number and 1 special character.
 #set location based on user input, else defaults to USEast
-$loc = Read-Host -Prompt "Provide the location to host your VPN service [defaults to USA]"
+$loc = Read-Host -Prompt "Provide the region to host your VPN service [defaults to USA]"
 if ([string]::IsNullOrWhiteSpace($loc))
 {
-$loc = "westus2"
+$loc = "northcentralus"
 }
 #self-destroy timmer
-$timer = Read-Host -Prompt "Duration of VPN Service in incements of 1 hrs. [defaults to 1hr] This service would cost you 57cents per hour" ## Please reword
+$timer = Read-Host -Prompt "Duration of VPN Service in incements of 1 hrs. [defaults to 1hr] This service would cost you 5 cents per hour" ## Please reword
 if ([string]::IsNullOrWhiteSpace($timer))
 {
 $timer = 1
@@ -84,7 +84,7 @@ az login --output none
 $rgjson = ConvertFrom-Json -InputObject $rgdata
 $rgid = $rgjson.id
 
-# Create secure random password
+# Create secure random password for use within OpenVpn
 $stringAsStream = [System.IO.MemoryStream]::new()
 $writer = [System.IO.StreamWriter]::new($stringAsStream)
 [string]$randValue = Get-Random
@@ -95,13 +95,17 @@ $stringAsStream.Position = 0
 echo $randompass
 
 # Setup VM with defaults and obtain the newly created machines public IP address
-[string]$data = az vm create --resource-group $rgname --name $vmname --image UbuntuLTS --size Standard_DS1_v2 --authentication-type password --admin-username $vmname.ToLower() --admin-password $randomvmpasswd --public-ip-sku Standard --assign-identity [system] --scope $rgid --accelerated-networking true --ephemeral-os-disk true # not supported for student accounts --priority spot --eviction-policy Delete --encryption-at-host true 
+[string]$data = az vm create --resource-group $rgname --name $vmname --image UbuntuLTS --size Standard_DS1_v2 --authentication-type password --admin-username $vmname.ToLower() --admin-password $randomvmpasswd --public-ip-sku Standard --assign-identity [system] --accelerated-networking true --ephemeral-os-disk true # not supported for student accounts --priority spot --eviction-policy Delete --encryption-at-host true 
 $json_data = ConvertFrom-JSON -InputObject $data
 $machine_ip = $json_data.publicIpAddress
 
-# Get local network details
+#Role Assignment to enable self destruction
+az role assignment create --assignee $json_data.identity.systemAssignedIdentity --role "Contributor" --scope $rgid
+
+#Get local network details
 [string]$network = az network vnet list --resource-group $rgname
 $json_network = ConvertFrom-JSON -InputObject $network
+
 # Open ports to internet (remove port 22 for final release)
 az vm open-port --port 443,22 --resource-group $rgname --name $vmname --output none
 
@@ -143,7 +147,8 @@ New-Item .\pass.txt; Set-Content .\pass.txt "ghost_user`n${randompass}"
 # TODO: Figure out how to run this in the background!
 
 # Login into open vpn using the config file
-openvpn --config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt
+Start-Process -FilePath "openvpn" -ArgumentList "--config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt" -WindowStyle Hidden
+#openvpn --config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt
 
 # Start-Process -FilePath "openvpn" -ArgumentList "--config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt" -NoNewWindow
 # Start-Process -FilePath "openvpn" -ArgumentList "--config .\GPRTCL-profile.ovpn --auth-user-pass .\pass.txt" -WindowStyle Hidden
