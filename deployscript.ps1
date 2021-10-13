@@ -1,34 +1,34 @@
 # Print the project name for the user
-
 Write-host @"
-     ________               __     ____            __  __
-    / ____/ /_  ____  _____/ /_   / __ \__________/ /_/ /
-   / / __/ __ \/ __ \/ ___/ __/  / /_/ / ___/ ___/ __/ / 
-  / /_/ / / / / /_/ (__  ) /_   / ____/ /  / /__/ /_/ /  
-  \____/_/ /_/\____/____/\__/  /_/   /_/   \___/\__/_/   
-********************************************************
-
+     ________               __     ____             __                   __
+    / ____/ /_  ____  _____/ /_   / __ \_________  / /_____  _________  / /
+   / / __/ __ \/ __ \/ ___/ __/  / /_/ / ___/ __ \/ __/ __ \/ ___/ __ \/ / 
+  / /_/ / / / / /_/ (__  ) /_   / ____/ /  / /_/ / /_/ /_/ / /__/ /_/ / /  
+  \____/_/ /_/\____/____/\__/  /_/   /_/   \____/\__/\____/\___/\____/_/   
+  *************************************************************************
 "@
 
-#initilizing variables
+# Initilizing variables
 $rgname = -join ((65..80) + (97..100) | Get-Random -Count 10 | % {[char]$_})
 $vmname = -join ((65..80) + (97..100) | Get-Random -Count 14 | % {[char]$_})
 $winvmname = -join ((65..80) + (97..100) | Get-Random -Count 14 | % {[char]$_})
 $randomvmpasswd = -join ((0x30..0x39) + ( 0x41..0x5A) + ( 0x61..0x7A) | Get-Random -Count 20  | % {[char]$_}) # The password length must be between 12 and 72. Password must have the 3 of the following: 1 lower case character, 1 upper case character, 1 number and 1 special character.
-#set location based on user input, else defaults to USEast
+
+# Set location based on user input, else defaults to USEast
 $loc = Read-Host -Prompt "Provide the region to host your VPN service [defaults to USA]"
 if ([string]::IsNullOrWhiteSpace($loc))
 {
 $loc = "centralus" #defaults to central US location
 }
-#self-destroy timmer
+
+# Self-destroy timer
 $timer = Read-Host -Prompt "Duration of VPN Service in incements of 1 hrs. [defaults to 1hr] This service would cost you 5 cents per hour" ## Please reword
 if ([string]::IsNullOrWhiteSpace($timer))
 {
 $timer = 1
 }
 
-write-host "installing vpn client"
+write-host "Installing VPN client"
 # Install openvpn daemon
 Invoke-WebRequest -Uri "https://swupdate.openvpn.org/community/releases/OpenVPN-2.5.4-I602-amd64.msi" -OutFile .\OpenVPN-2.5.4-I602-amd64.msi
 msiexec /i OpenVPN-2.5.4-I602-amd64.msi /quiet
@@ -36,12 +36,11 @@ msiexec /i OpenVPN-2.5.4-I602-amd64.msi /quiet
 # Clean up after ourselves
 del OpenVPN-2.5.4-I602-amd64.msi
 
-# Install chocolatey
+# Install chocolatey and Azure cli
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-# Install Azure CLi
 choco install azure-cli -y --no-progress
 
-# After installing packages from chocolatey, refresh powershell environment variables
+# After installing packages from chocolatey, refresh powershell environment variables and set the path to openvpn daemon
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 $env:Path += ";C:\Program Files\OpenVPN\bin"
 
@@ -71,15 +70,17 @@ $machine_ip = $json_data.publicIpAddress
 write-host "Role Assignment to enable self destruction"
 az role assignment create --assignee $json_data.identity.systemAssignedIdentity --role "Contributor" --scope $rgid --output none
 
-#Get local network details
+# Get local network details
 [string]$network = az network vnet list --resource-group $rgname
 $json_network = ConvertFrom-JSON -InputObject $network
 
 # Open ports to internet (remove port 22 for final release)
 az vm open-port --port 443,22 --resource-group $rgname --name $vmname --output none
 Write-host "initiaiting OpenVPN deployment"
-# converts to seconds
+
+# Convert to seconds
 $timer_seconds = $timer*60*60
+
 # Build up this command syntax
 $command = {\"fileUris\": [\"https://raw.githubusercontent.com/G-PRTCL/startupscripts/main/startup.sh\"],\"commandToExecute\": \"./startup.sh {0} {1} {2}\"} -f $randompass,$timer_seconds,$rgname;
 $command = "{"+$command+"}"
@@ -106,7 +107,6 @@ While (!(Test-Path .\GPRTCL-profile.ovpn -ErrorAction SilentlyContinue)){
   if ($profile -like "*ghost_user@${machine_ip}*"){
     curl.exe -k -s -u ghost_user:"${randompass}" https://${machine_ip}/rest/"GetUserlogin" -o GPRTCL-profile.ovpn
   }
-  write-host "service not ready.. retrying in 5 seconds.. "
   sleep 5
 }
 Write-host "Connecting to VPN"
