@@ -66,7 +66,7 @@ echo $randompass
 [string]$data = az vm create --resource-group $rgname --name $vmname --image UbuntuLTS --size Standard_DS1_v2 --authentication-type password --admin-username $vmname.ToLower() --admin-password $randomvmpasswd --public-ip-sku Standard --assign-identity [system] --accelerated-networking true --ephemeral-os-disk true # not supported for student accounts --priority spot --eviction-policy Delete --encryption-at-host true 
 $json_data = ConvertFrom-JSON -InputObject $data
 $machine_ip = $json_data.publicIpAddress
-
+sleep 5
 write-host "Role Assignment to enable self destruction"
 az role assignment create --assignee $json_data.identity.systemAssignedIdentity --role "Contributor" --scope $rgid --output none
 
@@ -86,11 +86,12 @@ $command = {\"fileUris\": [\"https://raw.githubusercontent.com/G-PRTCL/startupsc
 $command = "{"+$command+"}"
 $command = "az vm extension set --resource-group $rgname --vm-name $vmname --name customScript --publisher Microsoft.Azure.Extensions --protected-settings '$command'"
 $command = [scriptblock]::Create("$command")
-
+sleep 5
 # Install docker and run openvpn container (Asyncronous version of the command)
 Start-Job -ScriptBlock $command
 # deploys windows machine into existing network, keeping the VM in the same RG to enable self destruct 
 # TODO: make this a optional based on user input
+Write-Host "Setting up VDI"
 [string]$winvm = az vm create --resource-group $rgname --name $winvmname --vnet-name $json_network.name --subnet $json_network.subnets.name --image Win2019Datacenter --admin-username $vmname.ToLower() --admin-password $randomvmpasswd # not supported for student accounts --priority spot --eviction-policy Delete --encryption-at-host true
 $json_winvm = ConvertFrom-JSON -InputObject $winvm
 $win_machine_ip = $json_winvm.publicIpAddress
