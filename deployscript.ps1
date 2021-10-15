@@ -32,7 +32,7 @@ if ([string]::IsNullOrWhiteSpace($loc) -or !$region_ids.Contains($loc)){
 $timer = Read-Host -Prompt "Duration of VPN Service in incements of 1 hrs. [defaults to 1hr] This service costs 5 cents per hour" ## Please reword
 $timer_int = ($timer -as [int])
 if ([string]::IsNullOrWhiteSpace($timer) -or ($timer_int -eq $null)){
-  write-host "Using default timer"
+  write-host "Timer set to 1Hr"
   $timer = 1
 }
 
@@ -78,7 +78,7 @@ $stringAsStream.Position = 0
 [string]$randompass = Get-FileHash -InputStream $stringAsStream | Select-Object Hash -ExpandProperty Hash
 
 # Setup VM with defaults and obtain the newly created machines public IP address
-write-host "Creating VM"
+write-host "Setting up VPN Server in $loc"
 [string]$data = az vm create --resource-group $rgname --name $vmname --image UbuntuLTS --size Standard_DS1_v2 --authentication-type password --admin-username $vmname.ToLower() --admin-password $randomvmpasswd --public-ip-sku Standard --assign-identity [system] --accelerated-networking true --ephemeral-os-disk true --only-show-errors # not supported for student accounts --priority spot --eviction-policy Delete --encryption-at-host true 
 $json_data = ConvertFrom-JSON -InputObject $data
 $machine_ip = $json_data.publicIpAddress
@@ -108,7 +108,7 @@ Sleep 5
 
 # Deploys windows machine into existing network, keeping the VM in the same RG to enable self destruct 
 # TODO: make this a optional based on user input
-Write-Host "Setting up VDI"
+Write-Host "Setting up Remote Work Envi"
 [string]$winvm = az vm create --resource-group $rgname --name $winvmname --vnet-name $json_network.name --subnet $json_network.subnets.name --image Win2019Datacenter --admin-username $vmname.ToLower() --admin-password $randomvmpasswd --only-show-errors # not supported for student accounts --priority spot --eviction-policy Delete --encryption-at-host true
 $json_winvm = ConvertFrom-JSON -InputObject $winvm
 $win_machine_ip = $json_winvm.publicIpAddress
