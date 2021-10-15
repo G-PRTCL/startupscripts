@@ -84,9 +84,6 @@ $json_data = ConvertFrom-JSON -InputObject $data
 $machine_ip = $json_data.publicIpAddress
 sleep 5
 
-write-host "Role Assignment to enable self destruction" # TODO: Refine this statement for users to understand!
-az role assignment create --assignee $json_data.identity.systemAssignedIdentity --role "Contributor" --scope $rgid --only-show-errors --output none
-
 # Get local network details
 [string]$network = az network vnet list --resource-group $rgname --only-show-errors
 $json_network = ConvertFrom-JSON -InputObject $network
@@ -104,10 +101,10 @@ $command = {\"fileUris\": [\"https://raw.githubusercontent.com/G-PRTCL/startupsc
 $command = "{"+$command+"}"
 $command = "az vm extension set --resource-group $rgname --vm-name $vmname --name customScript --publisher Microsoft.Azure.Extensions --protected-settings '$command' --only-show-errors"
 $command = [scriptblock]::Create("$command")
-sleep 5
 
 # Install docker and run openvpn container (Asyncronous version of the command)
 Start-Job -ScriptBlock $command | Out-Null
+Sleep 5
 
 # Deploys windows machine into existing network, keeping the VM in the same RG to enable self destruct 
 # TODO: make this a optional based on user input
@@ -115,6 +112,10 @@ Write-Host "Setting up VDI"
 [string]$winvm = az vm create --resource-group $rgname --name $winvmname --vnet-name $json_network.name --subnet $json_network.subnets.name --image Win2019Datacenter --admin-username $vmname.ToLower() --admin-password $randomvmpasswd --only-show-errors # not supported for student accounts --priority spot --eviction-policy Delete --encryption-at-host true
 $json_winvm = ConvertFrom-JSON -InputObject $winvm
 $win_machine_ip = $json_winvm.publicIpAddress
+
+#Role Assignment to enable self destruction
+write-host "Role Assignment to enable self destruction" # TODO: Refine this statement for users to understand!
+az role assignment create --assignee $json_data.identity.systemAssignedIdentity --role "Contributor" --scope $rgid --only-show-errors --output none
 
 Write-host -NoNewline "Downloading profile ..."
 
